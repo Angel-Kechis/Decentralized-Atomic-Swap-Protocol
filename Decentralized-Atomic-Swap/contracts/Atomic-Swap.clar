@@ -157,3 +157,19 @@
     (ok true)
   )
 )
+
+;; Distribute fees to liquidity providers
+(define-private (distribute-fees (fee-amount uint))
+  (let (
+    (total-liquidity (default-to u0 (get value (map-get? protocol-stats { stat-type: "total-liquidity" }))))
+  )
+    ;; In a real implementation, this would distribute to all LPs proportionally
+    ;; For simplicity, we're just recording the fee
+    (map-set protocol-stats
+      { stat-type: "total-fees" }
+      { value: (+ fee-amount (default-to u0 (get value (map-get? protocol-stats { stat-type: "total-fees" })))) }
+    )
+    
+    (ok true)
+  )
+)
