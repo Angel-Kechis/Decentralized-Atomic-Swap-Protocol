@@ -237,3 +237,18 @@
 (define-read-only (get-provider-details (provider principal))
   (map-get? liquidity-providers { provider: provider })
 )
+
+;; Get protocol statistics
+(define-read-only (get-protocol-stats (stat-type (string-ascii 20)))
+  (map-get? protocol-stats { stat-type: stat-type })
+)
+
+;; Get current protocol version
+(define-read-only (get-protocol-version)
+  (var-get protocol-version)
+)
+
+;; Check if circuit breaker is active
+(define-read-only (is-circuit-breaker-active)
+  (var-get circuit-breaker-active)
+)
