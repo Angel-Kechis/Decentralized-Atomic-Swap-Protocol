@@ -34,3 +34,29 @@
   }
 )
 
+;; Liquidity provider registry
+(define-map liquidity-providers
+  { provider: principal }
+  {
+    total-liquidity: uint,
+    rewards-earned: uint,
+    fee-discount: uint,
+    last-deposit-height: uint,
+    reputation-score: uint
+  }
+)
+
+;; Statistics tracking
+(define-map protocol-stats
+  { stat-type: (string-ascii 20) }
+  { value: uint }
+)
+
+;; Protocol parameters (governable)
+(define-data-var fee-percentage uint u30) ;; 0.3% base fee
+(define-data-var token-holder-discount uint u50) ;; 50% discount for token holders
+(define-data-var circuit-breaker-active bool false)
+(define-data-var volume-cap-per-block uint u1000000000000) ;; 1M STX
+(define-data-var admin principal tx-sender)
+(define-data-var min-reputation-required uint u10)
+(define-data-var protocol-version (string-ascii 10) "1.0.0")
