@@ -173,3 +173,22 @@
     (ok true)
   )
 )
+
+;; Update user reputation score
+(define-private (update-reputation (user principal) (points uint))
+  (let (
+    (provider-data (default-to 
+      { total-liquidity: u0, rewards-earned: u0, fee-discount: u0, last-deposit-height: u0, reputation-score: u0 } 
+      (map-get? liquidity-providers { provider: user })
+    ))
+  )
+    (map-set liquidity-providers
+      { provider: user }
+      (merge provider-data {
+        reputation-score: (+ (get reputation-score provider-data) points)
+      })
+    )
+    
+    (ok true)
+  )
+)
