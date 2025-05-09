@@ -252,3 +252,35 @@
 (define-read-only (is-circuit-breaker-active)
   (var-get circuit-breaker-active)
 )
+
+;; Additional Error Codes
+(define-constant ERR-PROPOSAL-NOT-FOUND (err u412))
+(define-constant ERR-ALREADY-VOTED (err u413))
+(define-constant ERR-PROPOSAL-CLOSED (err u414))
+(define-constant ERR-NOT-GOVERNOR (err u415))
+(define-constant ERR-INVALID-LP-TOKEN (err u416))
+(define-constant ERR-INSUFFICIENT-STAKE (err u417))
+(define-constant ERR-VAULT-LOCKED (err u418))
+(define-constant ERR-FLASH-LOAN-NOT-REPAID (err u419))
+
+;; Governance structure
+(define-map governors
+  { address: principal }
+  { active: bool, weight: uint }
+)
+
+(define-map governance-proposals
+  { proposal-id: uint }
+  {
+    proposer: principal,
+    title: (string-ascii 50),
+    description: (string-ascii 500),
+    action: (string-ascii 50),
+    parameter: uint,
+    votes-for: uint,
+    votes-against: uint,
+    start-height: uint,
+    end-height: uint,
+    executed: bool
+  }
+)
