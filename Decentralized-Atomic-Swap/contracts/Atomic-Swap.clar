@@ -127,3 +127,33 @@
     (ok true)
   )
 )
+
+;; Remove liquidity from the protocol
+(define-public (remove-liquidity (amount uint))
+  (let (
+    (provider-data (unwrap! (map-get? liquidity-providers { provider: tx-sender }) ERR-NOT-AUTHORIZED))
+    (current-liquidity (get total-liquidity provider-data))
+  )
+    ;; Check if provider has enough liquidity
+    (asserts! (>= current-liquidity amount) ERR-INVALID-AMOUNT)
+    
+    ;; Transfer STX from contract
+    (as-contract (try! (stx-transfer? amount tx-sender tx-sender)))
+    
+    ;; Update provider data
+    (map-set liquidity-providers
+      { provider: tx-sender }
+      (merge provider-data {
+        total-liquidity: (- current-liquidity amount)
+      })
+    )
+    
+    ;; Update total liquidity
+    (map-set protocol-stats
+      { stat-type: "total-liquidity" }
+      { value: (- (default-to u0 (get value (map-get? protocol-stats { stat-type: "total-liquidity" }))) amount) }
+    )
+    
+    (ok true)
+  )
+)
