@@ -192,3 +192,9 @@
     (ok true)
   )
 )
+
+;; Check if an address is blacklisted
+(define-private (is-blacklisted (address principal))
+  
+  false
+)
