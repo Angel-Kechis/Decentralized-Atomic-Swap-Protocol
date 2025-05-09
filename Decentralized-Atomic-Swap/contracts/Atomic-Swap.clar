@@ -198,3 +198,42 @@
   
   false
 )
+
+;; ----- Admin Functions -----
+
+;; Toggle circuit breaker
+(define-public (toggle-circuit-breaker)
+  (begin
+    (asserts! (is-eq tx-sender (var-get admin)) ERR-NOT-AUTHORIZED)
+    (ok (var-set circuit-breaker-active (not (var-get circuit-breaker-active))))
+  )
+)
+
+;; Update fee percentage
+(define-public (update-fee-percentage (new-fee uint))
+  (begin
+    (asserts! (is-eq tx-sender (var-get admin)) ERR-NOT-AUTHORIZED)
+    (asserts! (<= new-fee u1000) ERR-INVALID-AMOUNT) ;; Max 10%
+    (ok (var-set fee-percentage new-fee))
+  )
+)
+
+;; Transfer admin role
+(define-public (transfer-admin (new-admin principal))
+  (begin
+    (asserts! (is-eq tx-sender (var-get admin)) ERR-NOT-AUTHORIZED)
+    (ok (var-set admin new-admin))
+  )
+)
+
+;; ----- Read-Only Functions -----
+
+;; Get swap details
+(define-read-only (get-swap-details (swap-id (buff 32)))
+  (map-get? swaps { swap-id: swap-id })
+)
+
+;; Get liquidity provider details
+(define-read-only (get-provider-details (provider principal))
+  (map-get? liquidity-providers { provider: provider })
+)
