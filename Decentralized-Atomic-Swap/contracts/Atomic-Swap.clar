@@ -60,3 +60,19 @@
 (define-data-var admin principal tx-sender)
 (define-data-var min-reputation-required uint u10)
 (define-data-var protocol-version (string-ascii 10) "1.0.0")
+
+;; Update volume statistics and check if within cap
+(define-private (update-volume-stats (amount uint))
+  (let (
+    (current-volume (default-to u0 (get value (map-get? protocol-stats { stat-type: "daily-volume" }))))
+    (new-volume (+ current-volume amount))
+  )
+    (if (> new-volume (var-get volume-cap-per-block))
+      (err ERR-EXCEEDS-VOLUME-CAP)
+      (begin
+        (map-set protocol-stats { stat-type: "daily-volume" } { value: new-volume })
+        (ok true)
+      )
+    )
+  )
+)
