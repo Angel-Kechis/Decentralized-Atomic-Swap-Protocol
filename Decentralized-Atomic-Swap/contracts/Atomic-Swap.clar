@@ -284,3 +284,22 @@
     executed: bool
   }
 )
+
+(define-map proposal-votes
+  { proposal-id: uint, voter: principal }
+  { vote: bool, weight: uint }
+)
+
+(define-data-var next-proposal-id uint u1)
+(define-data-var proposal-duration uint u144) ;; ~1 day in Stacks blocks
+(define-data-var min-proposal-threshold uint u100000000) ;; Min STX to create proposal (100 STX)
+(define-data-var quorum-threshold uint u60) ;; 60% quorum needed
+
+;; Add governor
+(define-public (add-governor (address principal) (weight uint))
+  (begin
+    (asserts! (is-eq tx-sender (var-get admin)) ERR-NOT-AUTHORIZED)
+    (map-set governors { address: address } { active: true, weight: weight })
+    (ok true)
+  )
+)
