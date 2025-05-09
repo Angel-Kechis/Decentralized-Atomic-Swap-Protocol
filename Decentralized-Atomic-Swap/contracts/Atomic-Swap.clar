@@ -303,3 +303,19 @@
     (ok true)
   )
 )
+
+;; Remove governor
+(define-public (remove-governor (address principal))
+  (begin
+    (asserts! (is-eq tx-sender (var-get admin)) ERR-NOT-AUTHORIZED)
+    (map-set governors { address: address } { active: false, weight: u0 })
+    (ok true)
+  )
+)
+
+;; Check if address is governor
+(define-read-only (is-governor (address principal))
+  (let ((governor-data (default-to { active: false, weight: u0 } (map-get? governors { address: address }))))
+    (get active governor-data)
+  )
+)
